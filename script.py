@@ -2,7 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 
-# function that takes a url as the argument and extracts data from a single product page
+# Phase1
+#function that takes a url as the argument and extracts data from a single product page
 def getSingleBookData(url):
     page = requests.get(url)
     # Get the URL of the current page
@@ -48,5 +49,18 @@ with open('bookData.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile, delimiter=',')
     writer.writerow(column_headings) #write headers on first row
     writer.writerow(bookData) #write the scraped data on second row
+
+# Phase2 work in progress
+def singleCategoryData(url):
+    page = requests.get(url)
+    soup = BeautifulSoup(page.content, 'html.parser')
+    find_urls = soup.find_all('div', attrs={'class':'image_container'})
+    urls = []
+    for element in find_urls:
+       for link in element.find_all('a'):
+            href = link.get('href')
+            if href:
+                urls.append(href)
+    print(urls)
    
-  
+singleCategoryData('https://books.toscrape.com/catalogue/category/books/history_32/index.html') 
