@@ -66,21 +66,21 @@ def getSingleBookData(url):
     book_title = soup.select_one('#content_inner > article > div.row > div.col-sm-6.product_main > h1').text
     book_category = soup.select_one('#default > div > div > ul > li:nth-child(3) > a').text
     product_description = soup.select_one('#content_inner > article > p').text
-    universal_product_code = soup.select_one('#content_inner > article > table > tbody > tr:nth-child(1) > td')
     #locate table using the <table> tag
     table = soup.find('table', class_='table table-striped') 
     #loop through table to find and store headers
     table_headers = [th.text.strip() for th in table.find_all('th')]
-    print(table_headers)
+    #test print(table_headers)
     #loop through table to find and store table data
     table_data = [td.text.strip() for td in table.find_all('td')]
     #test print(table_data)
     #declare empty dictionary
     element_dict = {}
-    #fill dictionary with keys (headers) and values (table data)
+    #fill dictionary with keys (headers) and values (table data) using loop
     for i in range(len(table_headers)):
         element_dict[table_headers[i]] = table_data[i]
     #test print(element_dict)
+    #assign elements the corresponding dictionary value
     universal_product_code = element_dict['UPC']
     price_excluding_tax = element_dict['Price (excl. tax)']
     price_including_tax = element_dict['Price (incl. tax)']
