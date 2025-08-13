@@ -66,19 +66,25 @@ def getSingleBookData(url):
     book_title = soup.select_one('#content_inner > article > div.row > div.col-sm-6.product_main > h1').text
     book_category = soup.select_one('#default > div > div > ul > li:nth-child(3) > a').text
     product_description = soup.select_one('#content_inner > article > p').text
-#     #loop through page table to find elements
-#     table_elements = soup.find_all('td')
-#     data = ""
-#     for td in table_elements:
-#         data = td.get_text(strip=True)
-#         if data == '4165285e1663650f':
-#             universal_product_code = data
-#         if data == '£54.23':
-#             price_excluding_tax = data
-#         if data == '£54.23':
-#             price_including_tax = data
-#         if data == 'In stock (20 available)':
-#             quantity_available = data
+    universal_product_code = soup.select_one('#content_inner > article > table > tbody > tr:nth-child(1) > td')
+    #locate table using the <table> tag
+    table = soup.find('table', class_='table table-striped') 
+    #loop through table to find and store headers
+    table_headers = [th.text.strip() for th in table.find_all('th')]
+    print(table_headers)
+    #loop through table to find and store table data
+    table_data = [td.text.strip() for td in table.find_all('td')]
+    #test print(table_data)
+    #declare empty dictionary
+    element_dict = {}
+    #fill dictionary with keys (headers) and values (table data)
+    for i in range(len(table_headers)):
+        element_dict[table_headers[i]] = table_data[i]
+    #test print(element_dict)
+    universal_product_code = element_dict['UPC']
+    price_excluding_tax = element_dict['Price (excl. tax)']
+    price_including_tax = element_dict['Price (incl. tax)']
+    quantity_available = element_dict['Availability']
 #     # find star rating
 #     find_rating = soup.find(class_="star-rating Five")
 #     review_rating = find_rating.get('class')[1]
@@ -91,6 +97,9 @@ def getSingleBookData(url):
 #     return product_page_url, universal_product_code, book_title, price_including_tax, price_excluding_tax, quantity_available, product_description, book_category, review_rating, image_url
 # #store elements in bookData tuple
 # bookData = getSingleBookData('https://books.toscrape.com/catalogue/sapiens-a-brief-history-of-humankind_996/index.html')
+
+#test function
+getSingleBookData('https://books.toscrape.com/catalogue/unbound-how-eight-technologies-made-us-human-transformed-society-and-brought-our-world-to-the-brink_950/index.html')
 
 # column_headings = ['product_page_url', 'universal_product_code', 'book_title', 'price_including_tax', 'price_excluding_tax', 'quantity_available', 'product_description', 'book_category', 'review_rating', 'image_url']
 
@@ -125,6 +134,7 @@ def singleCategoryData(url):
     
     #use loop to call the singleCategoryData function with each link in full_links
     #....
-
+    #singleCategoryData(full_links[0])
+    
 # book category: History
 singleCategoryData('https://books.toscrape.com/catalogue/category/books/history_32/index.html') 
