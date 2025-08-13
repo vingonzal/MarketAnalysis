@@ -85,16 +85,17 @@ def getSingleBookData(url):
     price_excluding_tax = element_dict['Price (excl. tax)']
     price_including_tax = element_dict['Price (incl. tax)']
     quantity_available = element_dict['Availability']
-#     # find star rating
-#     find_rating = soup.find(class_="star-rating Five")
-#     review_rating = find_rating.get('class')[1]
-#     # image url
-#     main_image = soup.find('img')
-#     if main_image:
-#         image_url = main_image["src"]
-        
-#     #return all elements
-#     return product_page_url, universal_product_code, book_title, price_including_tax, price_excluding_tax, quantity_available, product_description, book_category, review_rating, image_url
+    find_rating = soup.select_one('[class^="star-rating "]')
+    review_rating = find_rating.get('class')[1]
+    # image url
+    main_image = soup.find('img')
+    if main_image:
+        image_url = main_image["src"].replace("../..", "")
+    base_url = 'http://books.toscrape.com/'
+    # use urljoin to combine base url with relative url to get absolute URL
+    image_url = urljoin(base_url, image_url)
+#   #return all elements
+    return product_page_url, universal_product_code, book_title, price_including_tax, price_excluding_tax, quantity_available, product_description, book_category, review_rating, image_url
 # #store elements in bookData tuple
 # bookData = getSingleBookData('https://books.toscrape.com/catalogue/sapiens-a-brief-history-of-humankind_996/index.html')
 
