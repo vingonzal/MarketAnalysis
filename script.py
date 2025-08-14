@@ -111,9 +111,11 @@ def getSingleBookData(url):
 def singleCategoryData(url):
     page = requests.get(url)
     soup = BeautifulSoup(page.text, 'html.parser')
+    #scan for and store the book URL data represented by their image
     find_urls = soup.find_all('div', attrs={'class':'image_container'})
     urls = []
     for element in find_urls:
+       #loop through each <a> tag
        for link in element.find_all('a'):
             # retrieve URL (specified as local link/relative URL)
             href = link.get('href').replace("../../..", "catalogue")
@@ -125,19 +127,20 @@ def singleCategoryData(url):
     full_links = []
     for url in urls:
         absolute_url = urljoin(base_url, url)
-        #test print
-        #print(absolute_url)
+        #store absolute URL in full_links list
         full_links.append(absolute_url)
-    
+    # create and use a dictionary to store the elements found for each book
     book_dict = {}
     element_headings = ['product_page_url', 'universal_product_code', 'book_title', 'price_including_tax', 'price_excluding_tax', 'quantity_available', 'product_description', 'book_category', 'review_rating', 'image_url']
     #fill dictionary with keys (headers) and values (table data) using loop
     for i in range(len(element_headings)):
+        # call function for each book page and store elements in bookData tuple
         bookData = (getSingleBookData(full_links[i]))
+        # assign keys (headers) and values (elements) in dictionary
         book_dict[element_headings[i]] = bookData[i]
     #test print
     print(book_dict)
    
-    
+
 # book category: History
 singleCategoryData('https://books.toscrape.com/catalogue/category/books/history_32/index.html') 
