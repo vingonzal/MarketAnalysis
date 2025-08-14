@@ -97,16 +97,6 @@ def getSingleBookData(url):
     #return all elements
     return product_page_url, universal_product_code, book_title, price_including_tax, price_excluding_tax, quantity_available, product_description, book_category, review_rating, image_url
 
-#test function with specified link
-#getSingleBookData('https://books.toscrape.com/catalogue/unbound-how-eight-technologies-made-us-human-transformed-society-and-brought-our-world-to-the-brink_950/index.html')
-
-# #Open a new file to write to called ‘bookData.csv’
-# with open('bookData.csv', 'w', newline='') as csvfile:
-#     #Create a writer object with that file
-#     writer = csv.writer(csvfile, delimiter=',')
-#     writer.writerow(column_headings) #write headers on first row
-#     writer.writerow(bookData) #write the scraped data on second row
-
 #visit category page and extract URLs
 def singleCategoryData(url):
     page = requests.get(url)
@@ -131,16 +121,29 @@ def singleCategoryData(url):
         full_links.append(absolute_url)
     # create and use a dictionary to store the elements found for each book
     book_dict = {}
+    list_of_book_dict = []
     element_headings = ['product_page_url', 'universal_product_code', 'book_title', 'price_including_tax', 'price_excluding_tax', 'quantity_available', 'product_description', 'book_category', 'review_rating', 'image_url']
     #fill dictionary with keys (headers) and values (table data) using loop
-    for i in range(len(element_headings)):
+    for i in range(len(full_links)):
         # call function for each book page and store elements in bookData tuple
         bookData = (getSingleBookData(full_links[i]))
         # assign keys (headers) and values (elements) in dictionary
-        book_dict[element_headings[i]] = bookData[i]
-    #test print
-    print(book_dict)
-   
+        for item in range(len(bookData)):
+            book_dict[element_headings[item]] = bookData[item]
+        #test print
+        #print(book_dict)
+        list_of_book_dict.append(book_dict)
+    #test print    
+    print(list_of_book_dict)
+
+    #modify below to write list onto csv
+    #Open a new file to write to called ‘bookCategoryData.csv’
+#   with open('bookCategoryData.csv', 'w', newline='') as csvfile:
+#      #Create a writer object with that file
+#      writer = csv.writer(csvfile, delimiter=',')
+#      writer.writerow(column_headings) #write headers on first row
+#      writer.writerow(bookData) #write the scraped data on second row
+
 
 # book category: History
 singleCategoryData('https://books.toscrape.com/catalogue/category/books/history_32/index.html') 
