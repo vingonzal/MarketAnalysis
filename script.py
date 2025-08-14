@@ -137,9 +137,7 @@ def singleCategoryData(url):
         book_dict[element_headings[i]] = bookData[i]
     #test print
     print(book_dict)
-    #use loop to call the singleCategoryData function with each link in full_links
-    #....
-    
+   
     
 # book category: History
 singleCategoryData('https://books.toscrape.com/catalogue/category/books/history_32/index.html') 
