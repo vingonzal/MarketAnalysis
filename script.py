@@ -77,8 +77,8 @@ def getSingleBookData(url):
     #declare empty dictionary
     element_dict = {}
     #fill dictionary with keys (headers) and values (table data) using loop
-    for i in range(len(table_headers)):
-        element_dict[table_headers[i]] = table_data[i]
+    for item in range(len(table_headers)):
+        element_dict[table_headers[item]] = table_data[item]
     #test print(element_dict)
     #assign elements the corresponding dictionary value
     universal_product_code = element_dict['UPC']
@@ -94,15 +94,11 @@ def getSingleBookData(url):
     base_url = 'http://books.toscrape.com/'
     # use urljoin to combine base url with relative url to get absolute URL
     image_url = urljoin(base_url, image_url)
-#   #return all elements
+    #return all elements
     return product_page_url, universal_product_code, book_title, price_including_tax, price_excluding_tax, quantity_available, product_description, book_category, review_rating, image_url
-# #store elements in bookData tuple
-# bookData = getSingleBookData('https://books.toscrape.com/catalogue/sapiens-a-brief-history-of-humankind_996/index.html')
 
-#test function
-getSingleBookData('https://books.toscrape.com/catalogue/unbound-how-eight-technologies-made-us-human-transformed-society-and-brought-our-world-to-the-brink_950/index.html')
-
-# column_headings = ['product_page_url', 'universal_product_code', 'book_title', 'price_including_tax', 'price_excluding_tax', 'quantity_available', 'product_description', 'book_category', 'review_rating', 'image_url']
+#test function with specified link
+#getSingleBookData('https://books.toscrape.com/catalogue/unbound-how-eight-technologies-made-us-human-transformed-society-and-brought-our-world-to-the-brink_950/index.html')
 
 # #Open a new file to write to called ‘bookData.csv’
 # with open('bookData.csv', 'w', newline='') as csvfile:
@@ -133,9 +129,17 @@ def singleCategoryData(url):
         #print(absolute_url)
         full_links.append(absolute_url)
     
+    book_dict = {}
+    element_headings = ['product_page_url', 'universal_product_code', 'book_title', 'price_including_tax', 'price_excluding_tax', 'quantity_available', 'product_description', 'book_category', 'review_rating', 'image_url']
+    #fill dictionary with keys (headers) and values (table data) using loop
+    for i in range(len(element_headings)):
+        bookData = (getSingleBookData(full_links[i]))
+        book_dict[element_headings[i]] = bookData[i]
+    #test print
+    print(book_dict)
     #use loop to call the singleCategoryData function with each link in full_links
     #....
-    #singleCategoryData(full_links[0])
+    
     
 # book category: History
 singleCategoryData('https://books.toscrape.com/catalogue/category/books/history_32/index.html') 
