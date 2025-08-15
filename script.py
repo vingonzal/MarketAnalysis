@@ -3,9 +3,9 @@ from bs4 import BeautifulSoup
 import csv
 from urllib.parse import urljoin
 
-# # Phase 1/ Milstone 2
-#
-# #function that takes a url as the argument and extracts specified data from a single product page
+# Phase 1/ Milstone 2
+
+#function that takes a url as the argument and extracts specified data from a single product page
 # def getSingleBookData(url):
 #     page = requests.get(url)
 #     # Get the URL of the current page
@@ -123,26 +123,39 @@ def singleCategoryData(url):
     book_dict = {}
     list_of_book_dict = []
     element_headings = ['product_page_url', 'universal_product_code', 'book_title', 'price_including_tax', 'price_excluding_tax', 'quantity_available', 'product_description', 'book_category', 'review_rating', 'image_url']
-    #fill dictionary with keys (headers) and values (table data) using loop
-    for i in range(len(full_links)):
-        # call function for each book page and store elements in bookData tuple
-        bookData = (getSingleBookData(full_links[i]))
-        # assign keys (headers) and values (elements) in dictionary
-        for item in range(len(bookData)):
-            book_dict[element_headings[item]] = bookData[item]
-        #test print
-        #print(book_dict)
-        list_of_book_dict.append(book_dict)
-    #test print    
-    print(list_of_book_dict)
-
-    #modify below to write list onto csv
+    
     #Open a new file to write to called ‘bookCategoryData.csv’
-#   with open('bookCategoryData.csv', 'w', newline='') as csvfile:
-#      #Create a writer object with that file
-#      writer = csv.writer(csvfile, delimiter=',')
-#      writer.writerow(column_headings) #write headers on first row
-#      writer.writerow(bookData) #write the scraped data on second row
+    with open('bookCategoryData.csv', 'w', newline='') as csvfile:
+        #Create a writer object with that file
+        writer = csv.writer(csvfile, delimiter=',')
+        writer.writerow(element_headings) #write headers on first row
+        
+    
+        #fill dictionary with keys (headers) and values (table data) using loop
+        for i in range(len(full_links)):
+            # call function for each book page and store elements in bookData tuple
+            bookData = (getSingleBookData(full_links[i]))
+            #write the scraped data on each row
+            writer.writerow(bookData) 
+            # assign keys (headers) and values (elements) in dictionary
+            # for item in range(len(bookData)):
+            #     book_dict[element_headings[item]] = bookData[item]
+            #test print
+            #print(book_dict)
+            # list_of_book_dict.append(book_dict)
+    #test print    
+    #print(list_of_book_dict)
+
+
+    # with open("bookCategoryDataTest.csv", "w", newline="") as csvfile:
+    #     # Create a DictWriter object
+    #     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    #     # Write the header row
+    #     writer.writeheader()
+    #     # Write each dictionary as a row using a loop
+    #     # for row_dict in list_of_book_dict:
+    #     writer.writerow(list_of_book_dict[0])
+
 
 
 # book category: History
