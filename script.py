@@ -119,44 +119,26 @@ def singleCategoryData(url):
         absolute_url = urljoin(base_url, url)
         #store absolute URL in full_links list
         full_links.append(absolute_url)
-    # create and use a dictionary to store the elements found for each book
-    book_dict = {}
-    list_of_book_dict = []
+    
+    # creat list of csv column headers
     element_headings = ['product_page_url', 'universal_product_code', 'book_title', 'price_including_tax', 'price_excluding_tax', 'quantity_available', 'product_description', 'book_category', 'review_rating', 'image_url']
     
-    #Open a new file to write to called ‘bookCategoryData.csv’
-    with open('bookCategoryData.csv', 'w', newline='') as csvfile:
+    #Open a new file to write to called ‘bookCategoryData2.csv’
+    with open('bookCategoryData2.csv', 'w', newline='') as csvfile:
         #Create a writer object with that file
         writer = csv.writer(csvfile, delimiter=',')
-        writer.writerow(element_headings) #write headers on first row
-        
+        #write headers on first row
+        writer.writerow(element_headings) 
     
-        #fill dictionary with keys (headers) and values (table data) using loop
+        #use a loop to go through each link and write its data found on onto each subsequent row
         for i in range(len(full_links)):
             # call function for each book page and store elements in bookData tuple
             bookData = (getSingleBookData(full_links[i]))
-            #write the scraped data on each row
+            #write the scraped data for each book on each row
             writer.writerow(bookData) 
-            # assign keys (headers) and values (elements) in dictionary
-            # for item in range(len(bookData)):
-            #     book_dict[element_headings[item]] = bookData[item]
-            #test print
-            #print(book_dict)
-            # list_of_book_dict.append(book_dict)
-    #test print    
-    #print(list_of_book_dict)
 
+# call this function for a book category: History (test 1, 1 page)
+#singleCategoryData('https://books.toscrape.com/catalogue/category/books/history_32/index.html') 
 
-    # with open("bookCategoryDataTest.csv", "w", newline="") as csvfile:
-    #     # Create a DictWriter object
-    #     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-    #     # Write the header row
-    #     writer.writeheader()
-    #     # Write each dictionary as a row using a loop
-    #     # for row_dict in list_of_book_dict:
-    #     writer.writerow(list_of_book_dict[0])
-
-
-
-# book category: History
-singleCategoryData('https://books.toscrape.com/catalogue/category/books/history_32/index.html') 
+# call this function for a book category: Historical (test 2, 1 page)
+singleCategoryData('https://books.toscrape.com/catalogue/category/books/historical_42/index.html') 
