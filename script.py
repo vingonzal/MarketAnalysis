@@ -65,7 +65,10 @@ def getSingleBookData(url):
     # find elements (title, category, description) using selectors
     book_title = soup.select_one('#content_inner > article > div.row > div.col-sm-6.product_main > h1').text
     book_category = soup.select_one('#default > div > div > ul > li:nth-child(3) > a').text
-    product_description = soup.select_one('#content_inner > article > p').text
+    if soup.select_one('#content_inner > article > p') == None:
+        product_description = 'None'
+    else:
+        product_description = soup.select_one('#content_inner > article > p').text
     #locate table using the <table> tag
     table = soup.find('table', class_='table table-striped') 
     #loop through table to find and store headers
@@ -100,18 +103,34 @@ def getSingleBookData(url):
 #visit category page and extract URLs
 def singleCategoryData(url):
     page = requests.get(url)
-    soup = BeautifulSoup(page.text, 'html.parser')
-    #scan for and store the book URL data represented by their image
-    find_urls = soup.find_all('div', attrs={'class':'image_container'})
+    soup = BeautifulSoup(page.content, 'html.parser')
     urls = []
-    for element in find_urls:
-       #loop through each <a> tag
-       for link in element.find_all('a'):
-            # retrieve URL (specified as local link/relative URL)
-            href = link.get('href').replace("../../..", "catalogue")
-            if href:
-                # add relative URL to urls list
-                urls.append(href)
+    page_num = 2
+    while True:
+        #scan for and store the book URL data represented by their image
+        find_urls = soup.find_all('div', attrs={'class':'image_container'})
+        
+        for element in find_urls:
+        #loop through each <a> tag
+            for link in element.find_all('a'):
+                # retrieve URL (specified as local link/relative URL)
+                href = link.get('href').replace("../../..", "catalogue")
+                if href:
+                    # add relative URL to urls list
+                    urls.append(href)
+        # evaluate if a next page exists, if not then stop while loop
+        #next_button = soup.find("li", class_="next")
+        page_button = soup.find('ul', class_='pager') 
+        #loop through table to find and store headers
+        page_list_items = [li.text.strip() for li in page_button.find_all('li')]
+        if 'next' not in page_list_items:
+            break  # No more pages
+        base_url = url.replace("index.html","")
+        next_page = f"{base_url}page-{page_num}.html"
+        page = requests.get(next_page)
+        soup = BeautifulSoup(page.content, 'html.parser')
+        page_num += 1
+
     base_url = 'http://books.toscrape.com/'
     # use urljoin to combine base url with relative url to get absolute URL
     full_links = []
@@ -123,8 +142,12 @@ def singleCategoryData(url):
     # creat list of csv column headers
     element_headings = ['product_page_url', 'universal_product_code', 'book_title', 'price_including_tax', 'price_excluding_tax', 'quantity_available', 'product_description', 'book_category', 'review_rating', 'image_url']
     
-    #Open a new file to write to called ‘bookCategoryData2.csv’
-    with open('bookCategoryData2.csv', 'w', newline='') as csvfile:
+    #Open a new file to write to called ‘bookCategoryData.csv’
+    # test 1 - ‘bookCategoryData.csv’
+    # test 2 - ‘bookCategoryData2.csv’
+    # test 3 - ‘bookCategoryData3.csv’
+    # test 4 - ‘bookCategoryData4.csv’
+    with open('bookCategoryData4.csv', 'w', encoding="utf-8", newline='') as csvfile:
         #Create a writer object with that file
         writer = csv.writer(csvfile, delimiter=',')
         #write headers on first row
@@ -137,8 +160,15 @@ def singleCategoryData(url):
             #write the scraped data for each book on each row
             writer.writerow(bookData) 
 
+
 # call this function for a book category: History (test 1, 1 page)
 #singleCategoryData('https://books.toscrape.com/catalogue/category/books/history_32/index.html') 
 
-# call this function for a book category: Historical (test 2, 1 page)
-singleCategoryData('https://books.toscrape.com/catalogue/category/books/historical_42/index.html') 
+# call this function for a book category: Historical (test 2, 2 pages)
+#singleCategoryData('https://books.toscrape.com/catalogue/category/books/mystery_3/index.html') 
+
+# call this function for a book category: Historical (test 3, multiple pages)
+#singleCategoryData('https://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html')
+
+# call this function for a book category: Historical (test 4, most pages)
+singleCategoryData('https://books.toscrape.com/catalogue/category/books/default_15/index.html')
