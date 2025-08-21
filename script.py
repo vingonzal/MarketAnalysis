@@ -148,7 +148,7 @@ from urllib.parse import urljoin
 #         # evaluate if a next page exists, if not then stop while loop
 #         #next_button = soup.find("li", class_="next")
 #         page_button = soup.find('ul', class_='pager') 
-#         #loop through table to find and store headers
+#         #loop through list item tags and store items
 #         page_list_items = [li.text.strip() for li in page_button.find_all('li')]
 #         if 'next' not in page_list_items:
 #             break  # No more pages
@@ -208,7 +208,7 @@ from urllib.parse import urljoin
 # and then extracts product information for all books across all categories. You
 # should write the data for each book category in a separate CSV file.
 #---
-
+# function to retrieve each individual book's data
 def getSingleBookData(url):
     page = requests.get(url)
     # Get the URL of the current page
@@ -272,9 +272,8 @@ def singleCategoryData(url, book_category):
                     # add relative URL to urls list
                     urls.append(href)
         # evaluate if a next page exists, if not then stop while loop
-        page_button = soup.find('ul', class_='pager') 
-        #loop through table to find and store headers
-        page_list_items = [li.text.strip() for li in page_button.find_all('li')]
+        # use loop to store list items then scan for the 'next' text
+        page_list_items = [li.text.strip() for li in soup.find_all('li')]
         if 'next' not in page_list_items:
             break  # No more pages
         base_url = url.replace("index.html","")
