@@ -358,7 +358,7 @@ import os
 # Finally, extend your existing work to download and save the image file for each
 # product page you visit
 
-# function to retrieve each individual book's data
+# function to retrieve each individual book's data - Phase 1
 def getSingleBookData(url):
     page = requests.get(url)
     # Get the URL of the current page
@@ -398,26 +398,27 @@ def getSingleBookData(url):
     base_url = 'http://books.toscrape.com/'
     # use urljoin to combine base url with relative url to get absolute URL
     image_url = urljoin(base_url, image_url)
-    save_images(image_url, book_category) #call function to download image url
+    # Phase 4 task
+    saveImages(image_url, book_category) #call function to download image url
     #return all elements
-    #return product_page_url, universal_product_code, book_title, price_including_tax, price_excluding_tax, quantity_available, product_description, book_category, review_rating, image_url
+    return product_page_url, universal_product_code, book_title, price_including_tax, price_excluding_tax, quantity_available, product_description, book_category, review_rating, image_url
 
-# function to download images
-def save_images(image_link, category):
-    url = image_link 
+# function to download images - Phase 4
+def saveImages(image_link, category):
+    url = image_link   
     image_folder = f"{category}_images"
-
+    #check if a folder already exists - if not, make a new folder
     if not os.path.exists(image_folder):
         os.makedirs(image_folder)
-
+    # send request to get the image link and store the binary data into the response object
     img_data = requests.get(url).content
-    img_name = os.path.basename(url)  # Get filename from URL
-    img_path = os.path.join(image_folder, img_name)
-
-    with open(img_path, 'wb') as handler:
+    img_name = os.path.basename(url)  # Get the "tail" or base from URL: filename.jpg
+    img_path = os.path.join(image_folder, img_name) #contruct file path
+    # prepare and open file using img_path in write and binary mode
+    with open(img_path, 'wb') as handler: #assign open file object to handler variable
         handler.write(img_data)
-        
-# #visit category page and extract URLs
+
+# #visit category page and extract URLs - Phase 2
 def singleCategoryData(url, book_category):
     page = requests.get(url)
     soup = BeautifulSoup(page.content, 'html.parser')
@@ -439,9 +440,9 @@ def singleCategoryData(url, book_category):
         # use loop to store list items then scan for the 'next' text
         page_list_items = [li.text.strip() for li in soup.find_all('li')]
         if 'next' not in page_list_items:
-            break  # No more pages
+            break  # No more pages, stop while loop
         base_url = url.replace("index.html","")
-        next_page = f"{base_url}page-{page_num}.html"
+        next_page = f"{base_url}page-{page_num}.html" #starts at page #2
         page = requests.get(next_page)
         soup = BeautifulSoup(page.content, 'html.parser')
         page_num += 1
@@ -454,29 +455,28 @@ def singleCategoryData(url, book_category):
         #store absolute URL in full_links list
         full_links.append(absolute_url)
     
-    # creat list of csv column headers
-    #element_headings = ['product_page_url', 'universal_product_code', 'book_title', 'price_including_tax', 'price_excluding_tax', 'quantity_available', 'product_description', 'book_category', 'review_rating', 'image_url']
+    #create list of csv column headers
+    element_headings = ['product_page_url', 'universal_product_code', 'book_title', 'price_including_tax', 'price_excluding_tax', 'quantity_available', 'product_description', 'book_category', 'review_rating', 'image_url']
     
-    # #Open a new file to write to called ‘{category]-bookCategoryData.csv’
-    # title = f"{book_category}-bookCategoryData.csv"
-    # with open(title, 'w', encoding="utf-8", newline='') as csvfile:
-    #     #Create a writer object with that file
-    #     writer = csv.writer(csvfile, delimiter=',')
-    #     #write headers on first row
-    #     writer.writerow(element_headings) 
+    #Open a new file to write to called ‘{category]-bookCategoryData.csv’ using this function
+    saveCSVData(book_category, full_links, element_headings) 
+
+def saveCSVData(book_category, full_links, element_headings):
+    title = f"{book_category}-bookCategoryData.csv"
+    with open(title, 'w', encoding="utf-8", newline='') as csvfile:
+        #Create a writer object with that file
+        writer = csv.writer(csvfile, delimiter=',')
+        #write headers on first row
+        writer.writerow(element_headings) 
     
-    #     #use a loop to go through each link and write its data found on onto each subsequent row
-        # for i in range(len(full_links)):
-    #         # call function for each book page and store elements in bookData tuple
-    #         bookData = (getSingleBookData(full_links[i]))
-    #         #write the scraped data for each book on each row
-    #         writer.writerow(bookData) 
+        #use a loop to go through each link and write its data found on onto each subsequent row
+        for i in range(len(full_links)):
+            # call function for each book page and store elements in bookData tuple
+            bookData = (getSingleBookData(full_links[i]))
+            #write the scraped data for each book on each row
+            writer.writerow(bookData)
 
-#look for Phase 4 - download image files
-    for i in range(len(full_links)):
-        # call function for each book page and store elements in bookData tuple
-        getSingleBookData(full_links[i])
-
+# function to extract all caregory URLs
 def getCategories(url):
     home_page = requests.get(url)
     # create soup object
@@ -508,6 +508,7 @@ def getCategories(url):
     # return both lists
     return full_links, category_list
 
+# main function
 def main():
     #call getCategories function to retrieve and return each Category link and name
     category_links, categories = list(getCategories('http://books.toscrape.com/'))
@@ -517,4 +518,5 @@ def main():
     for category_link, category in zip(category_links[1:], categories[1:]):
         singleCategoryData(category_link, category)
 
+#call main function to kick off webscraping/ETL scripts
 main()
