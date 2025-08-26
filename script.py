@@ -168,5 +168,5 @@ def main():
     for category_link, category in zip(category_links[1:], categories[1:]):
         singleCategoryData(category_link, category)
 
-#call main function to kick off webscraping/ETL scripts
+#call main function to kick off web scraping/ETL scripts
 main()

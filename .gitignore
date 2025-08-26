@@ -1,3 +1,6 @@
 /images
 /env
 *.csv
+__pycache__
+.wolf*
+.jpg
