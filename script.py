@@ -7,7 +7,7 @@ import os #module to help with OS function: file/directory operations and path m
 # *************************************************************
 # *******Project: Use Python Basics for Market Analysis********
 # *************************************************************
-# This code is an ETL pipeline that analyzes market data for an online bookstore, Books to Scrape
+
 # Begin at the main() function below
 
 # function to retrieve each individual book's data - Phase 1 - Extraction
