@@ -1,13 +1,16 @@
-import requests
-from bs4 import BeautifulSoup
-import csv
-from urllib.parse import urljoin
-import os
+import requests #library for making HTTP requests
+from bs4 import BeautifulSoup #library used for parsing HTML and XML documents
+import csv #module for CSV file handling
+from urllib.parse import urljoin # urljoin function is used to construct an absolute URL
+import os #module to help with OS function: file/directory operations and path manipulation
 
+# *************************************************************
 # *******Project: Use Python Basics for Market Analysis********
+# *************************************************************
 # This code is an ETL pipeline that analyzes market data for an online bookstore, Books to Scrape
+# Begin at the main() function below
 
-# function to retrieve each individual book's data - Phase 1
+# function to retrieve each individual book's data - Phase 1 - Extraction
 def getSingleBookData(url):
     page = requests.get(url)
     # Get the URL of the current page
@@ -65,7 +68,7 @@ def saveImages(image_link, category):
     img_path = os.path.join(image_folder, img_name) #contruct file path
     # prepare and open file using img_path in write and binary mode
     with open(img_path, 'wb') as handler: #assign open file object to handler variable
-        handler.write(img_data)
+        handler.write(img_data) #load the file
 
 # #visit category page and extract URLs - Phase 2
 def singleCategoryData(url, book_category):
@@ -110,7 +113,7 @@ def singleCategoryData(url, book_category):
     #Open a new file to write to called ‘{category]-bookCategoryData.csv’ using this function
     saveCSVData(book_category, full_links, element_headings) 
 
-# function to create CSV file and write data to it
+# function to create CSV file and write data to it - Load the data
 def saveCSVData(book_category, full_links, element_headings):
     title = f"{book_category}-bookCategoryData.csv"
     with open(title, 'w', encoding="utf-8", newline='') as csvfile:
