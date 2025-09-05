@@ -129,7 +129,7 @@ def saveCSVData(book_category, full_links, element_headings):
             #write the scraped data for each book on each row
             writer.writerow(bookData)
 
-# function to extract all caregory URLs - Phase 3
+# function to extract all category URLs - Phase 3
 def getCategories(url):
     home_page = requests.get(url)
     # create soup object
