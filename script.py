@@ -129,7 +129,7 @@ def saveCSVData(book_category, full_links, element_headings):
             #write the scraped data for each book on each row
             writer.writerow(bookData)
 
-# function to extract all category URLs - Phase 3
+# function to extract all category URLs and metadata - Phase 3
 def getCategories(url):
     home_page = requests.get(url)
     # create soup object
@@ -161,7 +161,7 @@ def getCategories(url):
     # return both lists
     return full_links, category_list
 
-# main function
+# main function - orchestrates the workflow and initiates scraping process
 def main():
     #call getCategories function to retrieve and return each Category link and name
     category_links, categories = list(getCategories('http://books.toscrape.com/'))
