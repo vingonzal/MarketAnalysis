@@ -24,18 +24,18 @@ def getSingleBookData(url):
         product_description = 'None'
     else:
         product_description = soup.select_one('#content_inner > article > p').text
-    #locate table using the <table> tag
+    # locate table using the <table> tag
     table = soup.find('table', class_='table table-striped') 
-    #loop through table to find and store headers
+    # loop through table to find and store headers
     table_headers = [th.text.strip() for th in table.find_all('th')]
-    #loop through table to find and store table data
+    # loop through table to find and store table data
     table_data = [td.text.strip() for td in table.find_all('td')]
-    #declare empty dictionary
+    # declare empty dictionary
     element_dict = {}
-    #fill dictionary with keys (headers) and values (table data) using loop
+    # fill dictionary with keys (headers) and values (table data) using loop
     for item in range(len(table_headers)):
         element_dict[table_headers[item]] = table_data[item]
-    #assign target elements the corresponding dictionary value
+    # assign target elements the corresponding dictionary value
     universal_product_code = element_dict['UPC']
     price_excluding_tax = element_dict['Price (excl. tax)']
     price_including_tax = element_dict['Price (incl. tax)']
@@ -52,7 +52,7 @@ def getSingleBookData(url):
     image_url = urljoin(base_url, image_url)
     # Phase 4 task
     saveImages(image_url, book_category) #call function to download image url
-    #return all elements
+    # return all elements
     return product_page_url, universal_product_code, book_title, price_including_tax, price_excluding_tax, quantity_available, product_description, book_category, review_rating, image_url
 
 # function to download images - Phase 4
