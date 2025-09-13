@@ -59,7 +59,7 @@ def getSingleBookData(url):
 def saveImages(image_link, category):
     url = image_link   
     image_folder = f"{category}_images"
-    #check if a folder already exists - if not, make a new folder
+    # check if a folder already exists - if not, make a new folder
     if not os.path.exists(image_folder):
         os.makedirs(image_folder)
     # send request to get the image link and store the binary data into the response object
@@ -77,11 +77,11 @@ def singleCategoryData(url, book_category):
     urls = []
     page_num = 2
     while True:
-        #scan for and store the book URL data represented by their image
+        # scan for and store the book URL data represented by their image
         find_urls = soup.find_all('div', attrs={'class':'image_container'})
-        #loop through each element found under 'image_container' class
+        # loop through each element found under 'image_container' class
         for element in find_urls:
-            #loop through each <a> tag
+            # loop through each <a> tag
             for link in element.find_all('a'):
                 # retrieve URL (specified as local link/relative URL)
                 href = link.get('href').replace("../../..", "catalogue")
@@ -117,16 +117,16 @@ def singleCategoryData(url, book_category):
 def saveCSVData(book_category, full_links, element_headings):
     title = f"{book_category}-bookCategoryData.csv"
     with open(title, 'w', encoding="utf-8", newline='') as csvfile:
-        #Create a writer object with that file
+        # Create a writer object with that file
         writer = csv.writer(csvfile, delimiter=',')
-        #write headers on first row
+        # write headers on first row
         writer.writerow(element_headings) 
     
-        #use a loop to go through each link and write its data found on onto each subsequent row
+        # use a loop to go through each link and write its data found on onto each subsequent row
         for i in range(len(full_links)):
             # call function for each book page and store elements in bookData tuple
             bookData = (getSingleBookData(full_links[i]))
-            #write the scraped data for each book on each row
+            # write the scraped data for each book on each row
             writer.writerow(bookData)
 
 # function to extract all category URLs and metadata - Phase 3
@@ -134,14 +134,14 @@ def getCategories(url):
     home_page = requests.get(url)
     # create soup object
     soup = BeautifulSoup(home_page.content, 'html.parser')
-    #locate navigation section with categories
+    # locate navigation section with categories
     navigation_section = soup.find_all('ul', class_='nav nav-list') 
     # list for URLs
     category_urls = []
     # list for Categories
     category_list = []    
     for element in navigation_section:
-        #loop through each <a> tag
+        # loop through each <a> tag
         for link in element.find_all('a'):
             # retrieve URL (specified as local link/relative URL)
             href = link.get('href')
@@ -156,20 +156,20 @@ def getCategories(url):
     full_links = []
     for url in category_urls:
         absolute_url = urljoin(base_url, url)
-        #store absolute URL in full_links list
+        # store absolute URL in full_links list
         full_links.append(absolute_url)
     # return both lists
     return full_links, category_list
 
 # main function - orchestrates the workflow and initiates scraping process
 def main():
-    #call getCategories function to retrieve and return each Category link and name
+    # call getCategories function to retrieve and return each Category link and name
     category_links, categories = list(getCategories('http://books.toscrape.com/'))
 
-    #loop through lists and call the singleCategoryData function for each category link
-    #start at index 1 ("Books" category is not valid and at index 0)
+    # loop through lists and call the singleCategoryData function for each category link
+    # start at index 1 ("Books" category is not valid and at index 0)
     for category_link, category in zip(category_links[1:], categories[1:]):
         singleCategoryData(category_link, category)
 
-#call main function to kick off web scraping/ETL scripts
+# call main function to kick off web scraping/ETL scripts
 main()
